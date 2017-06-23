@@ -121,6 +121,7 @@ namespace Tyler1
         public static CheckBox DrawAXELocation;
         public static CheckBox DrawAXECatchRadius;
         public static CheckBox DrawAXELine;
+        public static Slider DrawAXELineWidth;
         public static Color DrawingCololor => Color.Red;
         private static readonly AIHeroClient Player = ObjectManager.Player;
         private static Spell.Active Q, W;
@@ -245,6 +246,7 @@ namespace Tyler1
             DrawAXECatchRadius = DrawingMenu.Add("tyler1AxeCatchDraw", new CheckBox("Draw Axe Catch Radius"));
             DrawAXELocation = DrawingMenu.Add("tyler1AxeLocationDraw", new CheckBox("Draw Axe Location"));
             DrawAXELine = DrawingMenu.Add("tyler1AxeLineDraw", new CheckBox("Draw Line to Axe Position"));
+            DrawAXELineWidth = DrawingMenu.Add("tyler1AxeLineDrawWidth", new Slider("Line Width: {0}", 8, 10, 1));
         }
 
         private static void OnUpdate(EventArgs args)
@@ -372,7 +374,7 @@ namespace Tyler1
 
             if (!ObjectManager.Get<GameObject>().Any(x => x.Name.Equals("Draven_Base_Q_reticle_self.troy") && !x.IsDead) || !AutoCatch.CurrentValue)
             {
-                Orbwalker.DisableMovement = true;
+                Orbwalker.DisableMovement = false;
             }
             if (AutoCatch.CurrentValue)
             {
@@ -395,7 +397,7 @@ namespace Tyler1
                     }
                     if (CatchOnlyCloseToMouse.CurrentValue && AXE.Distance(Mouse) > MaxDistToMouse.CurrentValue)
                     {
-                        Orbwalker.DisableMovement = true;
+                        Orbwalker.DisableMovement = false;
 
                         if (EntityManager.Heroes.Enemies.Count(
                             e => e.IsHPBarRendered && e.IsMelee && e.ServerPosition.Distance(AXE.Position) < 350) >= 1)
@@ -409,11 +411,11 @@ namespace Tyler1
                     if (AXE.Distance(Player.ServerPosition) > 80 && Orbwalker.CanMove)
                     {
                         Orbwalker.MoveTo(AXE.Position.Randomize());
-                        Orbwalker.DisableMovement = false;
+                        Orbwalker.DisableMovement = true;
                     }
                     if (AXE.Distance(Player.ServerPosition) <= 80)
                     {
-                        Orbwalker.DisableMovement = true;
+                        Orbwalker.DisableMovement = false;
                     }
                 }
             }
@@ -460,10 +462,10 @@ namespace Tyler1
                 if (DrawAXELocation.CurrentValue)
                     foreach (var AXE in reticles)
                     {
-                        EloBuddy.SDK.Rendering.Circle.Draw(DrawingCololor.ToSharpDX(), 140, 8, AXE.Position);
+                        EloBuddy.SDK.Rendering.Circle.Draw(DrawingCololor.ToSharpDX(), 140, DrawAXELineWidth.CurrentValue, AXE.Position);
                     }
 
-                Drawing.DrawLine(PlayerPosToScreen, Drawing.WorldToScreen(reticles[0].Position), 8, DrawingCololor);
+                Drawing.DrawLine(PlayerPosToScreen, Drawing.WorldToScreen(reticles[0].Position), DrawAXELineWidth.CurrentValue, DrawingCololor);
 
                 if (DrawAXELine.CurrentValue)
                     for (int i = 0; i < reticles.Length; i++)
@@ -471,13 +473,13 @@ namespace Tyler1
                         if (i < reticles.Length - 1)
                         {
                             Drawing.DrawLine(Drawing.WorldToScreen(reticles[i].Position),
-                                Drawing.WorldToScreen(reticles[i + 1].Position), 8, DrawingCololor);
+                                Drawing.WorldToScreen(reticles[i + 1].Position), DrawAXELineWidth.CurrentValue, DrawingCololor);
                         }
                     }
                 if (DrawAXECatchRadius.CurrentValue)
                     if (CatchOnlyCloseToMouse.CurrentValue && MaxDistToMouse.CurrentValue < 700 && ObjectManager.Get<GameObject>().Any(x => x.Name.Equals("Draven_Base_Q_reticle_self.troy") && !x.IsDead))
                     {
-                        EloBuddy.SDK.Rendering.Circle.Draw(DrawingCololor.ToSharpDX(), MaxDistToMouse.CurrentValue, 8, Game.CursorPos);
+                        EloBuddy.SDK.Rendering.Circle.Draw(DrawingCololor.ToSharpDX(), MaxDistToMouse.CurrentValue, DrawAXELineWidth.CurrentValue, Game.CursorPos);
                     }
             }
         }
