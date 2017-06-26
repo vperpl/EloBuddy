@@ -82,6 +82,7 @@ namespace Tyler1
             "Nidalee",
             "Riven",
             "Shaco",
+            "Warwick",
             "Vladimir",
             "Yasuo",
             "Zilean"
