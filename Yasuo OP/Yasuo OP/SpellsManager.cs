@@ -112,9 +112,11 @@ namespace Yasuo_OP
                     dmg += new[] {20f, 40f, 60f, 80f, 100f}[level] + Me.TotalAttackDamage;
                     break;
                 case SpellSlot.E:
-                    var bonusDamage = new[] {15.0f, 17.5f, 20.5f, 22.5f, 25.5f}[level]*ECount();
-
-                    dmg += new[] {51f, 61f, 71f, 81f, 91f}[level] + Me.FlatMagicDamageMod*0.6f + bonusDamage;
+            var stacksPassive = Player.Instance.Buffs.Find(b => b.DisplayName.Equals("YasuoDashScalar"));
+            var stacks = 1 + 0.25 * ((stacksPassive != null) ? stacksPassive.Count : 0);
+            return Player.Instance.CalculateDamageOnUnit(target, DamageType.Magical,
+                (float)(new double[] { 70, 90, 110, 130, 150 }[Player.GetSpell(SpellSlot.E).Level - 1] * stacks
+                         + 0.6 * (Player.Instance.FlatMagicDamageMod)));
                     break;
                 case SpellSlot.R:
                     dmg += new[] {200f, 300f, 400f}[level] + Me.FlatPhysicalDamageMod*1.5f;
