@@ -115,7 +115,7 @@ namespace Yasuo_OP
             var stacksPassive = Player.Instance.Buffs.Find(b => b.DisplayName.Equals("YasuoDashScalar"));
             var stacks = 1 + 0.25 * ((stacksPassive != null) ? stacksPassive.Count : 0);
             return Player.Instance.CalculateDamageOnUnit(target, DamageType.Magical,
-                (float)(new double[] { 70, 90, 110, 130, 150 }[Player.GetSpell(SpellSlot.E).Level - 1] * stacks
+                (float)(new double[] { 60, 70, 80, 90, 100 }[Player.GetSpell(SpellSlot.E).Level - 1] * stacks
                          + 0.6 * (Player.Instance.FlatMagicDamageMod)));
                     break;
                 case SpellSlot.R:
