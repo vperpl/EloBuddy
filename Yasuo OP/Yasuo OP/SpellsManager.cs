@@ -112,9 +112,9 @@ namespace Yasuo_OP
                     dmg += new[] {20f, 40f, 60f, 80f, 100f}[level] + Me.TotalAttackDamage;
                     break;
                 case SpellSlot.E:
-                    var bonusDamage = new[] {15.0f, 17f, 20.5f, 22.5f, 25.5f}[level]*ECount();
+                    var bonusDamage = new[] {15.0f, 17.5f, 20.5f, 22.5f, 25.5f}[level]*ECount();
 
-                    dmg += new[] {50f, 60f, 70f, 80f, 90f}[level] + Me.FlatMagicDamageMod*0.6f + bonusDamage;
+                    dmg += new[] {55f, 65f, 75f, 85f, 95f}[level] + Me.FlatMagicDamageMod*0.6f + bonusDamage;
                     break;
                 case SpellSlot.R:
                     dmg += new[] {200f, 300f, 400f}[level] + Me.FlatPhysicalDamageMod*1.5f;
