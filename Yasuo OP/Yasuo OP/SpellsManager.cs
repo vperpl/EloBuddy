@@ -120,7 +120,7 @@ namespace Yasuo_OP
                 var baseDamageArray = new[] {60, 70, 80, 90, 100};
 
                 var eStackCount = me.Buffs.Count(b => b.DisplayName == "YasuoDashScalar");
-                var eDmgScaling = Math.Min(1.5f, 1 + 0.25 * eStackCount);/max 50% increase/
+                var eDmgScaling = Math.Min(1.5f, 1 + 0.25 * eStackCount);
                 var baseDamageWithEStacks = baseDamageArray[level - 1] * eDmgScaling;
 
                 var bonusAd = me.TotalAttackDamage - me.BaseAttackDamage;
