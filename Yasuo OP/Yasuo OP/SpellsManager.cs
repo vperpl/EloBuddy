@@ -98,29 +98,42 @@ namespace Yasuo_OP
 
         #region Damages
 
-        public static float GetDamage(this Obj_AI_Base target, SpellSlot slot)
+
+    public static float GetDamage(this Obj_AI_Base target, SpellSlot slot)
         {
             var dmg = 0f;
 
-            var level = Me.Spellbook.GetSpell(slot).Level - 1;
+            var me = Player.Instance;
+            var level = me.Spellbook.GetSpell(slot).Level - 1;
 
-            if (!Me.Spellbook.GetSpell(slot).IsReady || target == null) return 0f;
-
-            switch (slot)
+            if (!me.Spellbook.GetSpell(slot).IsReady || target == null)
             {
-                case SpellSlot.Q:
-                    dmg += new[] {20f, 40f, 60f, 80f, 100f}[level] + Me.TotalAttackDamage;
-                    break;
-                case SpellSlot.E:
-            var stacksPassive = Player.Instance.Buffs.Find(b => b.DisplayName.Equals("YasuoDashScalar"));
-            var stacks = 1 + 0.25 * ((stacksPassive != null) ? stacksPassive.Count : 0);
-            return Player.Instance.CalculateDamageOnUnit(target, DamageType.Magical,
-                (float)(new double[] { 59, 69, 79, 89, 99 }[Player.GetSpell(SpellSlot.E).Level - 1] * stacks
-                         + 0.6 * (Player.Instance.FlatMagicDamageMod)));
-                    break;
-                case SpellSlot.R:
-                    dmg += new[] {200f, 300f, 400f}[level] + Me.FlatPhysicalDamageMod*1.5f;
-                    break;
+                return 0f;
+            }
+
+            if (slot == SpellSlot.Q)
+            {
+                dmg += new[] {20f, 40f, 60f, 80f, 100f}[level] + me.TotalAttackDamage;
+            }
+            else if (slot == SpellSlot.E)
+            {
+                var baseDamageArray = new[] {60, 70, 80, 90, 100};
+
+                var eStackCount = me.Buffs.Count(b => b.DisplayName == "YasuoDashScalar");
+                var eDmgScaling = Math.Min(1.5f, 1 + 0.25 * eStackCount);/max 50% increase/
+                var baseDamageWithEStacks = baseDamageArray[level - 1] * eDmgScaling;
+
+                var bonusAd = me.TotalAttackDamage - me.BaseAttackDamage;
+                var extraAdDamage = 0.2f + bonusAd;
+                var extraApDamage = 0.6f * me.FlatMagicDamageMod;
+
+                var totalRawDamage = baseDamageWithEStacks + extraAdDamage + extraApDamage;
+
+                return me.CalculateDamageOnUnit(target, DamageType.Magical, (float)totalRawDamage);
+            }
+            else if (slot == SpellSlot.R)
+            {
+                dmg += new[] {200f, 300f, 400f}[level] + me.FlatPhysicalDamageMod * 1.5f;
             }
 
             return dmg - 10f;
