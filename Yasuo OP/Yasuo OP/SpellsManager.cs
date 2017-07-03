@@ -4,7 +4,7 @@ using EloBuddy.SDK.Enumerations;
 using SharpDX;
 using static Yasuo_OP.Helper;
 using System.Linq;
-using System.Math;
+using static System.Math;
 
 namespace Yasuo_OP
 {
